@@ -1,4 +1,6 @@
-class ItensModel {
+import 'package:flutter/material.dart';
+
+class ItensModel extends ChangeNotifier {
   int? id;
   int? purchaseId;
   String? description;

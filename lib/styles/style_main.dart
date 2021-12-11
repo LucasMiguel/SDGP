@@ -12,7 +12,7 @@ class MainStyle {
   final fontTitle = TextStyle(
     color: Colors.black,
     fontSize: 26,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.w800,
   );
 
   ///Fonts on the label of main principal price (Total Price)

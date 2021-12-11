@@ -1,9 +1,13 @@
-class PurchasesModel {
+import 'package:flutter/material.dart';
+import 'package:sdgp/src/models/iten_model.dart';
+
+class PurchasesModel extends ChangeNotifier {
   int? id;
   String? description;
   double? totalPrice;
   String? dateCreation;
   int? type;
+  List<ItensModel>? listItensModel;
   int? status;
 
   PurchasesModel(
@@ -12,6 +16,7 @@ class PurchasesModel {
       this.totalPrice,
       this.dateCreation,
       this.type,
+      this.listItensModel,
       this.status});
 
   factory PurchasesModel.fromJson(Map<String, dynamic> json) {

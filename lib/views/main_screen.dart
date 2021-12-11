@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdgp/styles/style_main.dart';
+import 'package:sdgp/views/purchase_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -7,7 +8,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(7, 103, 123, 1),
+      backgroundColor: Color.fromRGBO(11, 118, 140, 1),
       body: Center(
         child: Column(
           children: [
@@ -30,13 +31,20 @@ class MainScreen extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      elevation: 5,
                       primary: Color.fromRGBO(8, 108, 129, 1),
                       fixedSize: Size(318, 63),
                       shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(20.0),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PurchaseScreen()),
+                      );
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Row(
@@ -70,6 +78,7 @@ class MainScreen extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      elevation: 5,
                       primary: Color.fromRGBO(8, 108, 129, 1),
                       fixedSize: Size(318, 63),
                       shape: new RoundedRectangleBorder(
@@ -110,6 +119,7 @@ class MainScreen extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      elevation: 5,
                       primary: Color.fromRGBO(8, 108, 129, 1),
                       fixedSize: Size(318, 63),
                       shape: new RoundedRectangleBorder(
