@@ -17,15 +17,16 @@ class MainStyle {
 
   ///Fonts on the label of main principal price (Total Price)
   final fontLabelMainPrice = TextStyle(
-    color: Colors.white,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
     fontSize: 14,
   );
 
   ///Fonts of the main principal price (Total Price)
   final fontMainPrice = TextStyle(
     color: Color.fromRGBO(71, 180, 101, 1),
-    fontSize: 38,
-    fontWeight: FontWeight.bold,
+    fontSize: 42,
+    fontWeight: FontWeight.w600,
   );
 
   ///Font of the iten's names

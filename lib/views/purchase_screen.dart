@@ -3,6 +3,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:sdgp/src/models/purchase_model.dart';
 import 'package:sdgp/styles/style_main.dart';
+import 'package:intl/intl.dart';
 
 ///Class with the screen purchase
 class PurchaseScreen extends StatelessWidget {
@@ -11,18 +12,15 @@ class PurchaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => PurchasesModel(),
-      child: PurchaseBody(
-        context: context,
-      ),
+      create: (context) => PurchasesModel(totalPrice: 0.00),
+      child: PurchaseBody(),
     );
   }
 }
 
 ///Widget with the purchase's body
 class PurchaseBody extends StatefulWidget {
-  const PurchaseBody({Key? key, required this.context}) : super(key: key);
-  final BuildContext context;
+  const PurchaseBody({Key? key}) : super(key: key);
 
   @override
   _PurchaseBodyState createState() => _PurchaseBodyState();
@@ -31,7 +29,8 @@ class PurchaseBody extends StatefulWidget {
 class _PurchaseBodyState extends State<PurchaseBody> {
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, purchaseModel, child) {
+    return Consumer<PurchasesModel>(
+        builder: (context, purchaseProvider, child) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -51,105 +50,128 @@ class _PurchaseBodyState extends State<PurchaseBody> {
             ),
           ],
         ),
-        // floatingActionButton: SpeedDial(
-        //   animatedIcon: AnimatedIcons.menu_close,
-        //   backgroundColor: const Color.fromRGBO(5, 130, 202, 1),
-        //   overlayColor: Colors.grey,
-        //   overlayOpacity: 0.5,
-        //   spacing: 15,
-        //   spaceBetweenChildren: 15,
-        //   children: [
-        //     //===== NOVA ATIVIDADE =============================================
-        //     SpeedDialChild(
-        //         child: const Icon(
-        //           Icons.bookmark_add,
-        //           color: Color.fromRGBO(5, 130, 202, 1),
-        //         ),
-        //         label: 'Nova Atividade',
-        //         onTap: () {}),
-        //     //===== FINALIZAR RDO ==============================================
-        //     SpeedDialChild(
-        //       child: const Icon(
-        //         Icons.checklist_sharp,
-        //         color: Color.fromRGBO(0, 128, 0, 1),
-        //       ),
-        //       label: 'Finalizar',
-        //       onTap: () {},
-        //     ),
-        //     //===== ATIVAR =====================================================
-        //     SpeedDialChild(
-        //       child: const Icon(
-        //         Icons.upload,
-        //         color: Color.fromRGBO(5, 130, 202, 1),
-        //       ),
-        //       label: 'Ativar',
-        //       onTap: () {},
-        //     ),
-        //     //===== REMOVER ====================================================
-        //     SpeedDialChild(
-        //       child: const Icon(
-        //         Icons.delete,
-        //         color: Color.fromRGBO(227, 0, 0, 1),
-        //       ),
-        //       label: 'Excluir',
-        //       onTap: () => showDialog<String>(
-        //         context: context,
-        //         builder: (BuildContext context) => AlertDialog(
-        //           title: const Text('Exclusão de RDO'),
-        //           content: const Text(
-        //               'Deseja excluir essa RDO, os dados serão perdidos?'),
-        //           actions: <Widget>[
-        //             TextButton(
-        //               onPressed: () => Navigator.pop(context, 'Cancelar'),
-        //               child: const Text(
-        //                 'Cancelar',
-        //                 style: TextStyle(fontWeight: FontWeight.bold),
-        //               ),
-        //             ),
-        //             TextButton(
-        //               onPressed: () {
-        //                 // if (rdoFinal != null) {
-        //                 //   //Irá fazer a exclusão no banco de dados, caso já esteja cadastrado
-        //                 // }
-        //                 Navigator.pop(context, 'OK');
-        //                 Navigator.pop(context);
-        //               },
-        //               child: const Text(
-        //                 'Exluir',
-        //                 style: TextStyle(
-        //                     color: Colors.red, fontWeight: FontWeight.bold),
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // bottomNavigationBar: BottomAppBar(
-        //   shape: CircularNotchedRectangle(),
-        //   child: Container(
-        //     height: 50,
-        //     child: Row(
-        //       mainAxisSize: MainAxisSize.max,
-        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //       children: <Widget>[
-        //         IconButton(
-        //           iconSize: 30.0,
-        //           padding: EdgeInsets.only(left: 28.0),
-        //           icon: Icon(Icons.home),
-        //           onPressed: () {},
-        //         ),
-        //         IconButton(
-        //           iconSize: 30.0,
-        //           padding: EdgeInsets.only(right: 28.0),
-        //           icon: Icon(Icons.search),
-        //           onPressed: () {},
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
+        body: PurchaseForm(
+          context: context,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: SpeedDial(
+          icon: Icons.add_shopping_cart_rounded,
+          iconTheme: IconThemeData(size: 25),
+          foregroundColor: Colors.white,
+          activeIcon: Icons.close,
+          activeBackgroundColor: Colors.red.shade400,
+          backgroundColor: const Color.fromRGBO(7, 103, 123, 1),
+          overlayColor: Colors.grey,
+          overlayOpacity: 0.5,
+          spacing: 15,
+          spaceBetweenChildren: 15,
+          children: [
+            //===== A GRANEL ===================================================
+            SpeedDialChild(
+                child: const Icon(
+                  Icons.add_box_outlined,
+                  color: Color.fromRGBO(5, 130, 202, 1),
+                ),
+                label: 'Granel',
+                onTap: () {}),
+            //===== UNIDADE ====================================================
+            SpeedDialChild(
+              child: const Icon(
+                Icons.add_box_outlined,
+                color: Color.fromRGBO(0, 128, 0, 1),
+              ),
+              label: 'Unidade',
+              onTap: () {},
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          color: Color.fromRGBO(35, 152, 162, 1),
+          child: Container(
+            height: 50,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(
+                  iconSize: 30.0,
+                  padding: EdgeInsets.only(left: 28.0),
+                  icon: Icon(
+                    Icons.list_sharp,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  iconSize: 30.0,
+                  padding: EdgeInsets.only(right: 28.0),
+                  icon: Icon(
+                    Icons.auto_graph_rounded,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
+}
+
+class PurchaseForm extends StatefulWidget {
+  const PurchaseForm({
+    Key? key,
+    required this.context,
+  }) : super(key: key);
+  final BuildContext context;
+
+  @override
+  _PurchaseFormState createState() => _PurchaseFormState();
+}
+
+class _PurchaseFormState extends State<PurchaseForm> {
+  @override
+  Widget build(context) {
+    return Consumer<PurchasesModel>(
+        builder: (context, purchaseProvider, child) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Container(
+              height: 90,
+              width: 500,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(174, 193, 180, 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.topLeft,
+                    margin: EdgeInsets.only(top: 8, left: 9),
+                    child: Text(
+                      "Total",
+                      style: MainStyle().fontLabelMainPrice,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 10, top: 10),
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      "${NumberFormat.simpleCurrency(locale: "pt_BR").format(purchaseProvider.totalPrice)}",
+                      textAlign: TextAlign.end,
+                      style: MainStyle().fontMainPrice,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       );
     });
   }
