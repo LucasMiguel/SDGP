@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
+import 'package:sdgp/src/models/iten_model.dart';
 import 'package:sdgp/src/models/purchase_model.dart';
 import 'package:sdgp/styles/style_main.dart';
 import 'package:intl/intl.dart';
@@ -139,6 +141,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
         builder: (context, purchaseProvider, child) {
       return Padding(
         padding: const EdgeInsets.all(20),
+
+        ///Principal Column
         child: Column(
           children: [
             Container(
@@ -169,10 +173,351 @@ class _PurchaseFormState extends State<PurchaseForm> {
                   ),
                 ],
               ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CardItem(context: context),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+///Widget com o item's card
+class CardItem extends StatefulWidget {
+  const CardItem({
+    Key? key,
+    required this.context,
+  }) : super(key: key);
+  final BuildContext context;
+
+  @override
+  _CardItemState createState() => _CardItemState();
+}
+
+class _CardItemState extends State<CardItem> {
+  @override
+  Widget build(context) {
+    return Consumer<PurchasesModel>(
+        builder: (context, purchaseProvider, child) {
+      return Container(
+        height: 100,
+        width: 500,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+            color: Color.fromRGBO(167, 238, 222, 0.17)),
+        child: Column(
+          children: [
+            //==================================================================
+            // 1nd ROW - LABEL PRODUCTS AND BUTTOMS SWITCH AND CLOSE ===========
+            //==================================================================
+            SizedBox(
+              height: 35,
+              child: Container(
+                padding: EdgeInsets.zero,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.bottomLeft,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Produto",
+                          style: MainStyle().fontLabelItens,
+                        ),
+                      ),
+                    ),
+
+                    ///Container with buttoms ----------------------------------
+                    Container(
+                      padding: EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(35, 152, 162, 0.56),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Transform.scale(
+                            scale: 0.7,
+                            child: Switch(
+                                activeColor: Color.fromRGBO(167, 238, 222, 1),
+                                value: true,
+                                onChanged: (value) {
+                                  print(value);
+                                }),
+                          ),
+                          IconButton(
+                            constraints: BoxConstraints(),
+                            onPressed: () async {
+                              var result;
+                              result = await dialogEdit();
+                              print(result.toString());
+                            },
+                            icon: Icon(
+                              Icons.edit,
+                              color: Colors.blue.shade700,
+                              size: 20,
+                            ),
+                          ),
+                          IconButton(
+                            constraints: BoxConstraints(),
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.red.shade300,
+                              size: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            //==================================================================
+            // 2nd ROW - PRODUCT'S NAME ========================================
+            //==================================================================
+            Container(
+              height: 25,
+              padding: EdgeInsets.only(left: 10),
+              child: TextFormField(
+                initialValue: "Nome do Produto",
+                style: MainStyle().fontItenName,
+                decoration: InputDecoration(
+                  enabledBorder: InputBorder.none,
+                ),
+              ),
+            ),
+            //==================================================================
+            // 2nd ROW - PRODUCT'S NAME ========================================
+            //==================================================================
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                // ROW WITH VALOR UNITÁRIO -------------------------------------
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Valor Unitário",
+                      style: MainStyle().fontLabelItens,
+                    ),
+                    Text(
+                      "R\$100000,00",
+                      style: MainStyle().fontCharacttIten,
+                    ),
+                  ],
+                ),
+                // ROW WITH QUANTITY -----------------------------------------
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Quant.",
+                      style: MainStyle().fontLabelItens,
+                    ),
+                    Text(
+                      "20000",
+                      style: MainStyle().fontCharacttIten,
+                    ),
+                  ],
+                ),
+                // ROW WITH TOTAL PRICE ----------------------------------------
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Valor Total.",
+                      style: MainStyle().fontLabelItens,
+                    ),
+                    Text(
+                      "R\$20000,00",
+                      style: MainStyle().fontCharacttIten,
+                    ),
+                  ],
+                ),
+                // ROW WITH TOTAL TYPE -----------------------------------------
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Tipo",
+                      style: MainStyle().fontLabelItens,
+                    ),
+                    Text(
+                      "Limpeza",
+                      style: MainStyle().fontCharacttIten,
+                    ),
+                  ],
+                ),
+              ],
             )
           ],
         ),
       );
     });
+  }
+
+  dialogEdit([ItensModel? itemModel]) async {
+    List<String> listItems = ['Limpeza', 'Carnes', 'Verduras'];
+    String value = 'Limpeza';
+    return await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('PRODUTO'),
+        content: SizedBox(
+          height: 230,
+          child: Column(
+            children: [
+              // PRODUCT'S TEXTFIELD ---------------------------------------------
+              SizedBox(
+                height: 45,
+                child: TextField(
+                  textAlignVertical: TextAlignVertical.bottom,
+                  decoration: InputDecoration(
+                    border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.teal),
+                        borderRadius: BorderRadius.circular(15)),
+                    hintText: 'Nome do Produto',
+                    labelText: 'Produto',
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              // PRICE'S TEXTFIELD ---------------------------------------------
+              SizedBox(
+                height: 45,
+                child: TextField(
+                  textAlignVertical: TextAlignVertical.bottom,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.teal),
+                        borderRadius: BorderRadius.circular(15)),
+                    hintText: 'Valor do Produto',
+                    labelText: 'Valor',
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              // QUANTITY'S TEXTFIELD ---------------------------------------------
+              SizedBox(
+                height: 45,
+                child: TextField(
+                  textAlignVertical: TextAlignVertical.bottom,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.teal),
+                        borderRadius: BorderRadius.circular(15)),
+                    hintText: 'Quantidade',
+                    labelText: 'Quantidade',
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              // TYPE'S TEXTFIELD ---------------------------------------------
+              SizedBox(
+                height: 60,
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.teal),
+                        borderRadius: BorderRadius.circular(15)),
+                    labelText: 'Tipo',
+                  ),
+                  value: value,
+                  items:
+                      listItems.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (valueR) {
+                    value = valueR!.toString();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          // TextButton(
+          //   onPressed: () => Navigator.pop(context, 'Cancel'),
+          //   child: const Text('Cancel'),
+          // ),
+          // TextButton(
+          //   onPressed: () => Navigator.pop(context, 'OK'),
+          //   child: const Text('OK'),
+          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.red.shade300,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        Icons.cancel,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "Cancelar",
+                        style: MainStyle().fontBtnsAlert,
+                      ),
+                    ]),
+              ),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.green.shade300,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context, 'OK'),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "Salvar",
+                        style: MainStyle().fontBtnsAlert,
+                      ),
+                    ]),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

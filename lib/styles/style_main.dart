@@ -32,14 +32,14 @@ class MainStyle {
   ///Font of the iten's names
   final fontLabelItens = TextStyle(
     color: Colors.black,
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: FontWeight.w200,
   );
 
   ///Font of the iten's names
   final fontItenName = TextStyle(
     color: Colors.black,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: FontWeight.bold,
   );
 
@@ -54,6 +54,13 @@ class MainStyle {
   final fontBottomMenu = TextStyle(
     color: Colors.white,
     fontSize: 18,
+    fontWeight: FontWeight.bold,
+  );
+
+  ///Font of the bottom menu
+  final fontBtnsAlert = TextStyle(
+    color: Colors.white,
+    fontSize: 14,
     fontWeight: FontWeight.bold,
   );
 }
