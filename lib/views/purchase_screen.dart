@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
-import 'package:sdgp/src/models/iten_model.dart';
-import 'package:sdgp/src/models/purchase_model.dart';
+import 'package:sdgp/src/components/confirmeDialog.dart';
+import 'package:sdgp/src/controllers/c_purchase.dart';
+import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/styles/style_main.dart';
 import 'package:intl/intl.dart';
 
@@ -78,15 +79,17 @@ class _PurchaseBodyState extends State<PurchaseBody> {
                   color: Color.fromRGBO(5, 130, 202, 1),
                 ),
                 label: 'Unidade',
-                onTap: () {
-                  purchaseProvider.listItensModel!.add(ItensModel());
+                onTap: () async {
+                  var itemModel;
                   //Call the dialog
-                  purchaseProvider.dialogEdit(
+                  itemModel = await PurchaseController().dialogEdit(
                     title: "Novo Produto",
-                    itemModel: purchaseProvider.listItensModel!.last,
                     context: context,
                     type: 1,
                   );
+                  if (itemModel != null) {
+                    purchaseProvider.addNewItem(itemModel: itemModel);
+                  }
                 }),
             //===== UNIDADE ====================================================
             SpeedDialChild(
@@ -95,7 +98,18 @@ class _PurchaseBodyState extends State<PurchaseBody> {
                 color: Color.fromRGBO(0, 128, 0, 1),
               ),
               label: 'Granel',
-              onTap: () {},
+              onTap: () async {
+                var itemModel;
+                //Call the dialog
+                itemModel = await PurchaseController().dialogEdit(
+                  title: "Novo Produto",
+                  context: context,
+                  type: 2,
+                );
+                if (itemModel != null) {
+                  purchaseProvider.addNewItem(itemModel: itemModel);
+                }
+              },
             ),
           ],
         ),
@@ -153,8 +167,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
         builder: (context, purchaseProvider, child) {
       return Padding(
         padding: const EdgeInsets.all(20),
-
-        ///Principal Column
+        //Principal Column
         child: Column(
           children: [
             Container(
@@ -189,7 +202,16 @@ class _PurchaseFormState extends State<PurchaseForm> {
             SizedBox(
               height: 10,
             ),
-            CardItem(context: context),
+            Flexible(
+              fit: FlexFit.tight,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: purchaseProvider.listItensModel!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return CardItem(context: context, index: index);
+                },
+              ),
+            ),
           ],
         ),
       );
@@ -202,8 +224,10 @@ class CardItem extends StatefulWidget {
   const CardItem({
     Key? key,
     required this.context,
+    required this.index,
   }) : super(key: key);
   final BuildContext context;
+  final int index;
 
   @override
   _CardItemState createState() => _CardItemState();
@@ -215,6 +239,7 @@ class _CardItemState extends State<CardItem> {
     return Consumer<PurchasesModel>(
         builder: (context, purchaseProvider, child) {
       return Container(
+        margin: EdgeInsets.only(top: 10),
         height: 100,
         width: 500,
         decoration: BoxDecoration(
@@ -258,21 +283,41 @@ class _CardItemState extends State<CardItem> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          //====================================================
+                          // ICON STATUS =======================================
+                          //====================================================
                           Transform.scale(
                             scale: 0.7,
                             child: Switch(
                                 activeColor: Color.fromRGBO(167, 238, 222, 1),
-                                value: true,
+                                value: purchaseProvider
+                                        .listItensModel![widget.index].status ==
+                                    1,
                                 onChanged: (value) {
-                                  print(value);
+                                  //Change status of item
+                                  purchaseProvider.changeStatusItem(
+                                      value, widget.index);
                                 }),
                           ),
+                          //====================================================
+                          // ICON EDIT =========================================
+                          //====================================================
                           IconButton(
                             constraints: BoxConstraints(),
                             onPressed: () async {
-                              // var result;
-                              // result = await dialogEdit();
-                              // print(result.toString());
+                              var itemModel;
+                              //Call the dialog
+                              itemModel = await PurchaseController().dialogEdit(
+                                title: "Novo Produto",
+                                itemModel: purchaseProvider
+                                    .listItensModel![widget.index],
+                                context: context,
+                              );
+                              if (itemModel != null) {
+                                purchaseProvider.listItensModel![widget.index] =
+                                    itemModel;
+                              }
+                              purchaseProvider.refreshPrice();
                             },
                             icon: Icon(
                               Icons.edit,
@@ -280,14 +325,32 @@ class _CardItemState extends State<CardItem> {
                               size: 20,
                             ),
                           ),
+                          //====================================================
+                          // ICON DELETE =======================================
+                          //====================================================
                           IconButton(
                             constraints: BoxConstraints(),
-                            onPressed: () {},
                             icon: Icon(
                               Icons.close,
                               color: Colors.red.shade300,
                               size: 20,
                             ),
+                            onPressed: () async {
+                              bool? choise;
+
+                              choise = await dialogConfirm(
+                                  context: context,
+                                  title: "Exclusão de item",
+                                  body: "Deseja excluir esse item?");
+                              //show the dialog wating the confirmation
+                              if (choise == true) {
+                                if (purchaseProvider.id == null) {
+                                  purchaseProvider.listItensModel!
+                                      .removeAt(widget.index);
+                                }
+                                purchaseProvider.refreshPrice();
+                              }
+                            },
                           ),
                         ],
                       ),
@@ -300,14 +363,12 @@ class _CardItemState extends State<CardItem> {
             // 2nd ROW - PRODUCT'S NAME ========================================
             //==================================================================
             Container(
+              alignment: Alignment.centerLeft,
               height: 25,
               padding: EdgeInsets.only(left: 10),
-              child: TextFormField(
-                initialValue: "Nome do Produto",
+              child: Text(
+                purchaseProvider.listItensModel![widget.index].description!,
                 style: MainStyle().fontItenName,
-                decoration: InputDecoration(
-                  enabledBorder: InputBorder.none,
-                ),
               ),
             ),
             //==================================================================
@@ -321,11 +382,16 @@ class _CardItemState extends State<CardItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Valor Unitário",
+                      purchaseProvider
+                                  .listItensModel![widget.index].typeAmount ==
+                              1
+                          ? "Valor Unitário"
+                          : "Valor Quilo",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
-                      "R\$100000,00",
+                      NumberFormat.simpleCurrency(locale: "pt_BR").format(
+                          purchaseProvider.listItensModel![widget.index].price),
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],
@@ -335,11 +401,24 @@ class _CardItemState extends State<CardItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Quant.",
+                      purchaseProvider
+                                  .listItensModel![widget.index].typeAmount ==
+                              1
+                          ? "Quant."
+                          : "Kg",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
-                      "20000",
+                      purchaseProvider
+                                  .listItensModel![widget.index].typeAmount ==
+                              1
+                          ? (purchaseProvider
+                                  .listItensModel![widget.index].amount!
+                                  .floor())
+                              .toString()
+                          : NumberFormat.decimalPattern("pt_BR").format(
+                              purchaseProvider
+                                  .listItensModel![widget.index].amount),
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],
@@ -349,11 +428,15 @@ class _CardItemState extends State<CardItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Valor Total.",
+                      "Valor Total",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
-                      "R\$20000,00",
+                      NumberFormat.simpleCurrency(locale: "pt_BR").format(
+                          (purchaseProvider
+                                  .listItensModel![widget.index].amount! *
+                              purchaseProvider
+                                  .listItensModel![widget.index].price!)),
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],
@@ -367,7 +450,8 @@ class _CardItemState extends State<CardItem> {
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
-                      "Limpeza",
+                      purchaseProvider
+                          .listItensModel![widget.index].nameTypeItem!,
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],

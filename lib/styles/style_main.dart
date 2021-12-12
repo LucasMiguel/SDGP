@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 
 class MainStyle {
   ///Font of principal menu
@@ -39,7 +38,7 @@ class MainStyle {
   ///Font of the iten's names
   final fontItenName = TextStyle(
     color: Colors.black,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: FontWeight.bold,
   );
 

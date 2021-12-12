@@ -7,6 +7,8 @@ class ItensModel extends ChangeNotifier {
   double? price;
   double? amount;
   int? typeItemId;
+  String? nameTypeItem;
+  int? typeAmount;
   int? status;
 
   ///Contrutor
@@ -17,6 +19,8 @@ class ItensModel extends ChangeNotifier {
     this.price,
     this.amount,
     this.typeItemId,
+    this.nameTypeItem,
+    this.typeAmount,
     this.status,
   });
 
@@ -28,6 +32,7 @@ class ItensModel extends ChangeNotifier {
       price: json['price'],
       amount: json['amount'],
       typeItemId: json['type'],
+      typeAmount: json['type_amount'],
       status: json['status'],
     );
   }
@@ -40,6 +45,7 @@ class ItensModel extends ChangeNotifier {
       'price': price,
       'amount': amount,
       'type': typeItemId,
+      'type_amount': typeAmount,
       'status': status,
     };
   }

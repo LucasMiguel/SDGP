@@ -1,5 +1,5 @@
 import 'package:sdgp/src/connections/connection_database.dart';
-import 'package:sdgp/src/models/type_item.dart';
+import 'package:sdgp/src/models/m_type_item.dart';
 
 class TypeItensController {
   Future<List<TypeItemModel>> getAll() async {
