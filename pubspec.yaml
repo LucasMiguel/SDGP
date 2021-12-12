@@ -26,6 +26,9 @@ dependencies:
   provider: 
   flutter_speed_dial:
   intl:
+  sqflite: 
+  currency_text_input_formatter: ^2.1.5
+  pattern_formatter: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -49,6 +52,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/logo_vertical.png
+    - db/data.db
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:sdgp/src/models/iten_model.dart';
@@ -14,7 +13,11 @@ class PurchaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => PurchasesModel(totalPrice: 0.00),
+      create: (context) => PurchasesModel(
+        totalPrice: 0.00,
+        dateCreation: DateTime.now().toString(),
+        listItensModel: [],
+      ),
       child: PurchaseBody(),
     );
   }
@@ -71,18 +74,27 @@ class _PurchaseBodyState extends State<PurchaseBody> {
             //===== A GRANEL ===================================================
             SpeedDialChild(
                 child: const Icon(
-                  Icons.add_box_outlined,
+                  Icons.format_list_numbered_outlined,
                   color: Color.fromRGBO(5, 130, 202, 1),
                 ),
-                label: 'Granel',
-                onTap: () {}),
+                label: 'Unidade',
+                onTap: () {
+                  purchaseProvider.listItensModel!.add(ItensModel());
+                  //Call the dialog
+                  purchaseProvider.dialogEdit(
+                    title: "Novo Produto",
+                    itemModel: purchaseProvider.listItensModel!.last,
+                    context: context,
+                    type: 1,
+                  );
+                }),
             //===== UNIDADE ====================================================
             SpeedDialChild(
               child: const Icon(
-                Icons.add_box_outlined,
+                Icons.line_weight,
                 color: Color.fromRGBO(0, 128, 0, 1),
               ),
-              label: 'Unidade',
+              label: 'Granel',
               onTap: () {},
             ),
           ],
@@ -258,9 +270,9 @@ class _CardItemState extends State<CardItem> {
                           IconButton(
                             constraints: BoxConstraints(),
                             onPressed: () async {
-                              var result;
-                              result = await dialogEdit();
-                              print(result.toString());
+                              // var result;
+                              // result = await dialogEdit();
+                              // print(result.toString());
                             },
                             icon: Icon(
                               Icons.edit,
@@ -366,158 +378,5 @@ class _CardItemState extends State<CardItem> {
         ),
       );
     });
-  }
-
-  dialogEdit([ItensModel? itemModel]) async {
-    List<String> listItems = ['Limpeza', 'Carnes', 'Verduras'];
-    String value = 'Limpeza';
-    return await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('PRODUTO'),
-        content: SizedBox(
-          height: 230,
-          child: Column(
-            children: [
-              // PRODUCT'S TEXTFIELD ---------------------------------------------
-              SizedBox(
-                height: 45,
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.bottom,
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal),
-                        borderRadius: BorderRadius.circular(15)),
-                    hintText: 'Nome do Produto',
-                    labelText: 'Produto',
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              // PRICE'S TEXTFIELD ---------------------------------------------
-              SizedBox(
-                height: 45,
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.bottom,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal),
-                        borderRadius: BorderRadius.circular(15)),
-                    hintText: 'Valor do Produto',
-                    labelText: 'Valor',
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              // QUANTITY'S TEXTFIELD ---------------------------------------------
-              SizedBox(
-                height: 45,
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.bottom,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal),
-                        borderRadius: BorderRadius.circular(15)),
-                    hintText: 'Quantidade',
-                    labelText: 'Quantidade',
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              // TYPE'S TEXTFIELD ---------------------------------------------
-              SizedBox(
-                height: 60,
-                child: DropdownButtonFormField(
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(
-                        borderSide: new BorderSide(color: Colors.teal),
-                        borderRadius: BorderRadius.circular(15)),
-                    labelText: 'Tipo',
-                  ),
-                  value: value,
-                  items:
-                      listItems.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (valueR) {
-                    value = valueR!.toString();
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          // TextButton(
-          //   onPressed: () => Navigator.pop(context, 'Cancel'),
-          //   child: const Text('Cancel'),
-          // ),
-          // TextButton(
-          //   onPressed: () => Navigator.pop(context, 'OK'),
-          //   child: const Text('OK'),
-          // ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.red.shade300,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    ),
-                  ),
-                ),
-                onPressed: () => Navigator.pop(context, 'Cancel'),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(
-                        Icons.cancel,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "Cancelar",
-                        style: MainStyle().fontBtnsAlert,
-                      ),
-                    ]),
-              ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.green.shade300,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
-                    ),
-                  ),
-                ),
-                onPressed: () => Navigator.pop(context, 'OK'),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(
-                        Icons.check,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "Salvar",
-                        style: MainStyle().fontBtnsAlert,
-                      ),
-                    ]),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
   }
 }
