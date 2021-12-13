@@ -39,6 +39,29 @@ class _PurchaseBodyState extends State<PurchaseBody> {
         builder: (context, purchaseProvider, child) {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: 30,
+            ),
+            onPressed: () async {
+              bool choise;
+
+              choise = await dialogConfirm(
+                  context: context,
+                  title: "Sair",
+                  body:
+                      "Deseja realmente sair?\nTodos os dados não salvos serão perdidos!",
+                  textBtn: "Sair",
+                  iconBtn: Icon(
+                    Icons.logout_outlined,
+                    color: Colors.white,
+                  ));
+              if (choise) {
+                Navigator.pop(context, null);
+              }
+            },
+          ),
           backgroundColor: Colors.white,
           title: Center(
             child: Text(
@@ -48,7 +71,13 @@ class _PurchaseBodyState extends State<PurchaseBody> {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                print(purchaseProvider.toMap());
+                print("Itens");
+                for (var item in purchaseProvider.listItensModel!) {
+                  print(item.toMap());
+                }
+              },
               icon: Icon(
                 Icons.save,
                 size: 30,
@@ -341,7 +370,12 @@ class _CardItemState extends State<CardItem> {
                               choise = await dialogConfirm(
                                   context: context,
                                   title: "Exclusão de item",
-                                  body: "Deseja excluir esse item?");
+                                  body: "Deseja excluir esse item?",
+                                  textBtn: "Excluir",
+                                  iconBtn: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ));
                               //show the dialog wating the confirmation
                               if (choise == true) {
                                 if (purchaseProvider.id == null) {
