@@ -25,10 +25,11 @@ dependencies:
     sdk: flutter
   provider: 
   flutter_speed_dial:
-  intl:
   sqflite: 
-  currency_text_input_formatter: ^2.1.5
-  pattern_formatter: ^2.0.0
+  pattern_formatter: 
+  intl:
+  currency_text_input_formatter: 
+  charts_flutter:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

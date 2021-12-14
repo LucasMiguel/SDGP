@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:sdgp/src/components/confirmeDialog.dart';
+import 'package:sdgp/src/components/pie_chart.dart';
 import 'package:sdgp/src/controllers/c_purchase.dart';
 import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/styles/style_main.dart';
@@ -35,8 +36,19 @@ class PurchaseBody extends StatefulWidget {
 class _PurchaseBodyState extends State<PurchaseBody> {
   @override
   Widget build(BuildContext context) {
+    int indexSelected = 0;
     return Consumer<PurchasesModel>(
         builder: (context, purchaseProvider, child) {
+      List<Widget> screens = <Widget>[
+        PurchaseForm(context: context),
+        Container(
+            child: SizedBox(
+                height: 350,
+                child: DonutPieChart.withSampleData(purchaseProvider
+                    .listItensModel!
+                    .where((element) => element.status == 1)
+                    .toList())))
+      ];
       return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -85,9 +97,8 @@ class _PurchaseBodyState extends State<PurchaseBody> {
             ),
           ],
         ),
-        body: PurchaseForm(
-          context: context,
-        ),
+        // body: Expanded(child: DonutPieChart.withSampleData()),
+        body: screens.elementAt(indexSelected),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: SpeedDial(
           icon: Icons.add_shopping_cart_rounded,
@@ -142,6 +153,9 @@ class _PurchaseBodyState extends State<PurchaseBody> {
             ),
           ],
         ),
+        //======================================================================
+        // BOTTOM NAVIGATION BAR ===============================================
+        //======================================================================
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           color: Color.fromRGBO(35, 152, 162, 1),
@@ -151,23 +165,41 @@ class _PurchaseBodyState extends State<PurchaseBody> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                IconButton(
-                  iconSize: 30.0,
-                  padding: EdgeInsets.only(left: 28.0),
-                  icon: Icon(
-                    Icons.list_sharp,
-                    color: Colors.white,
+                Expanded(
+                  child: IconButton(
+                    iconSize: 30.0,
+                    padding: EdgeInsets.only(right: 28.0),
+                    icon: Icon(
+                      Icons.list_sharp,
+                      color: indexSelected == 0
+                          ? Colors.green.shade300
+                          : Colors.grey.shade50,
+                      size: 35,
+                    ),
+                    onPressed: () {
+                      indexSelected = 0;
+                      print("Entrou aqui na lista");
+                      purchaseProvider.refreshWindow();
+                    },
                   ),
-                  onPressed: () {},
                 ),
-                IconButton(
-                  iconSize: 30.0,
-                  padding: EdgeInsets.only(right: 28.0),
-                  icon: Icon(
-                    Icons.auto_graph_rounded,
-                    color: Colors.white,
+                Expanded(
+                  child: IconButton(
+                    iconSize: 30.0,
+                    padding: EdgeInsets.only(left: 28.0),
+                    icon: Icon(
+                      Icons.pie_chart_outline_outlined,
+                      color: indexSelected == 1
+                          ? Colors.green.shade300
+                          : Colors.grey.shade50,
+                      size: 35,
+                    ),
+                    onPressed: () {
+                      indexSelected = 1;
+                      print("Entrou aqui no gráfico");
+                      purchaseProvider.refreshWindow();
+                    },
                   ),
-                  onPressed: () {},
                 ),
               ],
             ),

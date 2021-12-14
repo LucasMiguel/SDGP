@@ -69,4 +69,8 @@ class PurchasesModel extends ChangeNotifier {
     }
     refreshPrice();
   }
+
+  void refreshWindow() {
+    notifyListeners();
+  }
 }
