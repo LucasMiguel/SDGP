@@ -2,8 +2,10 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
+import 'package:sdgp/src/connections/connection_database.dart';
 import 'package:sdgp/src/controllers/c_type_itens.dart';
-import 'package:sdgp/src/models/m_iten.dart';
+import 'package:sdgp/src/models/m_item.dart';
+import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/src/models/m_type_item.dart';
 import 'package:sdgp/styles/style_main.dart';
 
@@ -13,9 +15,9 @@ class PurchaseController {
   ///@param itemModel = Object from manipulation
   ///@param context = context
   ///@param type = Type of item | 1 = Amount | 2 = Bunk
-  Future<ItensModel?> dialogEdit({
+  Future<ItemsModel?> dialogEdit({
     required String title,
-    ItensModel? itemModel,
+    ItemsModel? itemModel,
     required BuildContext context,
     int? type,
   }) async {
@@ -25,7 +27,7 @@ class PurchaseController {
     listTypes = await TypeItensController().getAll();
 
     if (itemModel == null) {
-      itemModel = ItensModel();
+      itemModel = ItemsModel();
       itemModel.status = 1;
       itemModel.typeAmount = type;
     }
@@ -34,7 +36,7 @@ class PurchaseController {
     final _formKey = GlobalKey<FormState>();
 
     //Show the dialog
-    return await showDialog<ItensModel>(
+    return await showDialog<ItemsModel>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text(title),
@@ -252,5 +254,18 @@ class PurchaseController {
         ],
       ),
     );
+  }
+
+  //Function on will save the purchase
+  Future<int?> SavePurchase(PurchasesModel purchaseModel) async {
+    int? idtemp;
+    if (purchaseModel.id == null) {
+      idtemp = await ConnectionDB().getLastId('purchases');
+      purchaseModel.id = idtemp;
+      return await ConnectionDB().insertData(purchaseModel, "purchases");
+    } else {
+      return await ConnectionDB()
+          .updateData(purchaseModel, "purchases", purchaseModel.id!);
+    }
   }
 }

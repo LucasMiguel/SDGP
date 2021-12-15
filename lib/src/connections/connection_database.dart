@@ -102,6 +102,24 @@ class ConnectionDB {
     return map;
   }
 
+  ///Função que retorna o ultimo id da tabela selecionada
+  Future<int> getLastId(String table) async {
+    List<Map<String, dynamic>> map;
+    final database = await connect();
+    try {
+      map = await database
+          .rawQuery("SELECT * FROM $table ORDER BY id DESC LIMIT 1;");
+      //Fechando banco de dados
+      await database.close();
+      return map[0]['id'];
+    } catch (e) {
+      print(e);
+      //Fechando banco de dados
+      await database.close();
+      return -1;
+    }
+  }
+
   ///Função que irá limpar a tabela para adicionar o novo valor
   Future<bool> deleteTable(String table) async {
     final database = await connect();

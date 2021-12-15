@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sdgp/src/models/m_iten.dart';
+import 'package:sdgp/src/models/m_item.dart';
 
 class PurchasesModel extends ChangeNotifier {
   int? id;
@@ -7,8 +7,9 @@ class PurchasesModel extends ChangeNotifier {
   double? totalPrice;
   String? dateCreation;
   int? type;
-  List<ItensModel>? listItensModel;
+  List<ItemsModel>? listItensModel;
   int? status;
+  bool save = false;
 
   PurchasesModel(
       {this.id,
@@ -52,7 +53,7 @@ class PurchasesModel extends ChangeNotifier {
   }
 
   ///Fuction if add new item
-  void addNewItem({required ItensModel itemModel}) {
+  void addNewItem({required ItemsModel itemModel}) {
     listItensModel!.add(itemModel);
     refreshPrice();
   }
@@ -71,6 +72,8 @@ class PurchasesModel extends ChangeNotifier {
   }
 
   void refreshWindow() {
+    //Change controller
+    save = false;
     notifyListeners();
   }
 }

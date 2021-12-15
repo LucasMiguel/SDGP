@@ -40,14 +40,12 @@ class _PurchaseBodyState extends State<PurchaseBody> {
     return Consumer<PurchasesModel>(
         builder: (context, purchaseProvider, child) {
       List<Widget> screens = <Widget>[
+        //Window of index 0
         PurchaseForm(context: context),
-        Container(
-            child: SizedBox(
-                height: 350,
-                child: DonutPieChart.withSampleData(purchaseProvider
-                    .listItensModel!
-                    .where((element) => element.status == 1)
-                    .toList())))
+        //Window of index 1
+        DonutPieChart.withSampleData(purchaseProvider.listItensModel!
+            .where((element) => element.status == 1)
+            .toList())
       ];
       return Scaffold(
         appBar: AppBar(
@@ -92,6 +90,7 @@ class _PurchaseBodyState extends State<PurchaseBody> {
               },
               icon: Icon(
                 Icons.save,
+                color: purchaseProvider.save ? Colors.grey : Colors.green,
                 size: 30,
               ),
             ),

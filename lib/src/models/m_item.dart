@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ItensModel extends ChangeNotifier {
+class ItemsModel extends ChangeNotifier {
   int? id;
   int? purchaseId;
   String? description;
@@ -12,7 +12,7 @@ class ItensModel extends ChangeNotifier {
   int? status;
 
   ///Contrutor
-  ItensModel({
+  ItemsModel({
     this.id,
     this.purchaseId,
     this.description,
@@ -24,8 +24,8 @@ class ItensModel extends ChangeNotifier {
     this.status,
   });
 
-  factory ItensModel.fromJson(Map<String, dynamic> json) {
-    return ItensModel(
+  factory ItemsModel.fromJson(Map<String, dynamic> json) {
+    return ItemsModel(
       id: json['id'],
       purchaseId: json['purchase_id'],
       description: json['description'],
