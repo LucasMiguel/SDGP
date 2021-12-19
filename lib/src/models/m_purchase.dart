@@ -42,22 +42,13 @@ class PurchasesModel extends ChangeNotifier {
     };
   }
 
-  void refreshPrice() {
-    totalPrice = 0.00;
-    for (var item in listItensModel!) {
-      if (item.status == 1) {
-        totalPrice = totalPrice! + (item.price! * item.amount!);
-      }
-    }
-    notifyListeners();
-  }
-
   ///Fuction if add new item
   void addNewItem({required ItemsModel itemModel}) {
     listItensModel!.add(itemModel);
     refreshPrice();
   }
 
+  ///Fuction if change item value and update the price
   void changeStatusItem(bool value, int index) {
     if (value) {
       listItensModel![index].status = 1;
@@ -71,6 +62,24 @@ class PurchasesModel extends ChangeNotifier {
     refreshPrice();
   }
 
+  ///This fuction updates price
+  void refreshPrice() {
+    totalPrice = 0.00;
+    for (var item in listItensModel!) {
+      if (item.status == 1) {
+        totalPrice = totalPrice! + (item.price! * item.amount!);
+      }
+    }
+    refreshWindow();
+  }
+
+  ///This fuction refresh the window and save the list
+  void refreshSave() {
+    save = true;
+    notifyListeners();
+  }
+
+  ///This fuction refresh the window
   void refreshWindow() {
     //Change controller
     save = false;

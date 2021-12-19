@@ -26,14 +26,9 @@ class PurchaseScreen extends StatelessWidget {
 }
 
 ///Widget with the purchase's body
-class PurchaseBody extends StatefulWidget {
+class PurchaseBody extends StatelessWidget {
   const PurchaseBody({Key? key}) : super(key: key);
 
-  @override
-  _PurchaseBodyState createState() => _PurchaseBodyState();
-}
-
-class _PurchaseBodyState extends State<PurchaseBody> {
   @override
   Widget build(BuildContext context) {
     int indexSelected = 0;
@@ -81,12 +76,14 @@ class _PurchaseBodyState extends State<PurchaseBody> {
           ),
           actions: [
             IconButton(
-              onPressed: () {
-                print(purchaseProvider.toMap());
-                print("Itens");
-                for (var item in purchaseProvider.listItensModel!) {
-                  print(item.toMap());
-                }
+              onPressed: () async {
+                // print(purchaseProvider.toMap());
+                // print("Itens");
+                // for (var item in purchaseProvider.listItensModel!) {
+                //   print(item.toMap());
+                // }
+                String? description = await dialogDescription(context: context);
+                print(description);
               },
               icon: Icon(
                 Icons.save,
@@ -177,7 +174,6 @@ class _PurchaseBodyState extends State<PurchaseBody> {
                     ),
                     onPressed: () {
                       indexSelected = 0;
-                      print("Entrou aqui na lista");
                       purchaseProvider.refreshWindow();
                     },
                   ),
@@ -195,7 +191,6 @@ class _PurchaseBodyState extends State<PurchaseBody> {
                     ),
                     onPressed: () {
                       indexSelected = 1;
-                      print("Entrou aqui no gráfico");
                       purchaseProvider.refreshWindow();
                     },
                   ),
@@ -209,18 +204,14 @@ class _PurchaseBodyState extends State<PurchaseBody> {
   }
 }
 
-class PurchaseForm extends StatefulWidget {
+///Widget with the purchase's form
+class PurchaseForm extends StatelessWidget {
   const PurchaseForm({
     Key? key,
     required this.context,
   }) : super(key: key);
   final BuildContext context;
 
-  @override
-  _PurchaseFormState createState() => _PurchaseFormState();
-}
-
-class _PurchaseFormState extends State<PurchaseForm> {
   @override
   Widget build(context) {
     return Consumer<PurchasesModel>(
@@ -280,7 +271,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
 }
 
 ///Widget com o item's card
-class CardItem extends StatefulWidget {
+class CardItem extends StatelessWidget {
   const CardItem({
     Key? key,
     required this.context,
@@ -288,12 +279,6 @@ class CardItem extends StatefulWidget {
   }) : super(key: key);
   final BuildContext context;
   final int index;
-
-  @override
-  _CardItemState createState() => _CardItemState();
-}
-
-class _CardItemState extends State<CardItem> {
   @override
   Widget build(context) {
     return Consumer<PurchasesModel>(
@@ -351,12 +336,12 @@ class _CardItemState extends State<CardItem> {
                             child: Switch(
                                 activeColor: Color.fromRGBO(167, 238, 222, 1),
                                 value: purchaseProvider
-                                        .listItensModel![widget.index].status ==
+                                        .listItensModel![index].status ==
                                     1,
                                 onChanged: (value) {
                                   //Change status of item
                                   purchaseProvider.changeStatusItem(
-                                      value, widget.index);
+                                      value, index);
                                 }),
                           ),
                           //====================================================
@@ -369,12 +354,12 @@ class _CardItemState extends State<CardItem> {
                               //Call the dialog
                               itemModel = await PurchaseController().dialogEdit(
                                 title: "Novo Produto",
-                                itemModel: purchaseProvider
-                                    .listItensModel![widget.index],
+                                itemModel:
+                                    purchaseProvider.listItensModel![index],
                                 context: context,
                               );
                               if (itemModel != null) {
-                                purchaseProvider.listItensModel![widget.index] =
+                                purchaseProvider.listItensModel![index] =
                                     itemModel;
                               }
                               purchaseProvider.refreshPrice();
@@ -411,7 +396,7 @@ class _CardItemState extends State<CardItem> {
                               if (choise == true) {
                                 if (purchaseProvider.id == null) {
                                   purchaseProvider.listItensModel!
-                                      .removeAt(widget.index);
+                                      .removeAt(index);
                                 }
                                 purchaseProvider.refreshPrice();
                               }
@@ -432,7 +417,7 @@ class _CardItemState extends State<CardItem> {
               height: 25,
               padding: EdgeInsets.only(left: 10),
               child: Text(
-                purchaseProvider.listItensModel![widget.index].description!,
+                purchaseProvider.listItensModel![index].description!,
                 style: MainStyle().fontItenName,
               ),
             ),
@@ -447,16 +432,14 @@ class _CardItemState extends State<CardItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      purchaseProvider
-                                  .listItensModel![widget.index].typeAmount ==
-                              1
+                      purchaseProvider.listItensModel![index].typeAmount == 1
                           ? "Valor Unitário"
                           : "Valor Quilo",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
                       NumberFormat.simpleCurrency(locale: "pt_BR").format(
-                          purchaseProvider.listItensModel![widget.index].price),
+                          purchaseProvider.listItensModel![index].price),
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],
@@ -466,24 +449,18 @@ class _CardItemState extends State<CardItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      purchaseProvider
-                                  .listItensModel![widget.index].typeAmount ==
-                              1
+                      purchaseProvider.listItensModel![index].typeAmount == 1
                           ? "Quant."
                           : "Kg",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
-                      purchaseProvider
-                                  .listItensModel![widget.index].typeAmount ==
-                              1
-                          ? (purchaseProvider
-                                  .listItensModel![widget.index].amount!
+                      purchaseProvider.listItensModel![index].typeAmount == 1
+                          ? (purchaseProvider.listItensModel![index].amount!
                                   .floor())
                               .toString()
                           : NumberFormat.decimalPattern("pt_BR").format(
-                              purchaseProvider
-                                  .listItensModel![widget.index].amount),
+                              purchaseProvider.listItensModel![index].amount),
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],
@@ -498,10 +475,8 @@ class _CardItemState extends State<CardItem> {
                     ),
                     Text(
                       NumberFormat.simpleCurrency(locale: "pt_BR").format(
-                          (purchaseProvider
-                                  .listItensModel![widget.index].amount! *
-                              purchaseProvider
-                                  .listItensModel![widget.index].price!)),
+                          (purchaseProvider.listItensModel![index].amount! *
+                              purchaseProvider.listItensModel![index].price!)),
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],
@@ -515,8 +490,7 @@ class _CardItemState extends State<CardItem> {
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
-                      purchaseProvider
-                          .listItensModel![widget.index].nameTypeItem!,
+                      purchaseProvider.listItensModel![index].nameTypeItem!,
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],
