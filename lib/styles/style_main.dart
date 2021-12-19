@@ -62,4 +62,11 @@ class MainStyle {
     fontSize: 14,
     fontWeight: FontWeight.bold,
   );
+
+  final fontCardPurchaseList = TextStyle(
+    // color: Color.fromRGBO(169, 241, 248, 1),
+    color: Color.fromRGBO(35, 152, 162, 1),
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
 }

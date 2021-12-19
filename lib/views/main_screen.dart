@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sdgp/src/controllers/c_purchase.dart';
+import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/styles/style_main.dart';
+import 'package:sdgp/views/purchase_list_view.dart';
 import 'package:sdgp/views/purchase_screen.dart';
 
 class MainScreen extends StatelessWidget {
@@ -85,7 +88,19 @@ class MainScreen extends StatelessWidget {
                         borderRadius: new BorderRadius.circular(20.0),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      List<PurchasesModel>? purchasesList;
+
+                      purchasesList =
+                          await PurchaseController().getPurchasesList();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PurchaseListView(
+                              purchasesList: purchasesList,
+                            ),
+                          ));
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Row(
@@ -101,47 +116,6 @@ class MainScreen extends StatelessWidget {
                           ),
                           Text(
                             "Listas de Compras",
-                            style: MainStyle().fontMenu,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            //==================================================================
-            // BUTTOM 'HISTÓRICO DE COMPRAS' ===================================
-            //==================================================================
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 5,
-                      primary: Color.fromRGBO(8, 108, 129, 1),
-                      fixedSize: Size(318, 63),
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(20.0),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 14),
-                            child: Icon(
-                              Icons.list_alt_outlined,
-                              color: Colors.white,
-                              size: 25,
-                            ),
-                          ),
-                          Text(
-                            "Histór. de Compras",
                             style: MainStyle().fontMenu,
                           ),
                         ],

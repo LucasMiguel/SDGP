@@ -285,4 +285,38 @@ class PurchaseController {
       print("ERROR: $e");
     }
   }
+
+  ///This function will get all purchases
+  Future<List<PurchasesModel>?> getPurchasesList() async {
+    List<Map<String, dynamic>> mapPurchases;
+    List<Map<String, dynamic>> mapItems = [];
+    List<PurchasesModel> purchasesList = [];
+
+    //Get of the database
+    mapPurchases = await ConnectionDB().getAllData(
+        table: "purchases", columnsWhere: "status = ?", valueWhere: [1]);
+
+    //Retrives all the purchase's items
+    for (var item in mapPurchases) {
+      mapItems = [];
+      mapItems = await ConnectionDB().getAllData(
+        table: 'items',
+        columnsWhere: "purchase_id =? ",
+        valueWhere: [item['id']],
+      );
+      purchasesList.add(PurchasesModel.fromJson(item, mapItems));
+    }
+    return purchasesList;
+  }
+
+  Future<int?> changeStatus({required PurchasesModel purchasesModel}) async {
+    try {
+      purchasesModel.status = 0;
+      return await ConnectionDB()
+          .updateData(purchasesModel, "purchases", purchasesModel.id!);
+    } catch (error) {
+      print("ERRO: $error");
+      return 0;
+    }
+  }
 }

@@ -18,13 +18,21 @@ class PurchasesModel extends ChangeNotifier {
       this.listItensModel,
       this.status});
 
-  factory PurchasesModel.fromJson(Map<String, dynamic> json) {
+  factory PurchasesModel.fromJson(Map<String, dynamic> purchase,
+      [List<Map<String, dynamic>>? itemsList]) {
+    List<ItemsModel> listItems = [];
+    if (itemsList != null) {
+      for (var item in itemsList) {
+        listItems.add(ItemsModel.fromJson(item));
+      }
+    }
     return PurchasesModel(
-      id: json['id'],
-      description: json['description'],
-      totalPrice: json['total_price'],
-      dateCreation: json['date_creation'],
-      status: json['status'],
+      id: purchase['id'],
+      description: purchase['description'],
+      totalPrice: purchase['total_price'],
+      dateCreation: purchase['date_creation'],
+      status: purchase['status'],
+      listItensModel: listItems,
     );
   }
 

@@ -28,9 +28,11 @@ class ConnectionDB {
     List<int> bytes =
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
-    // Write and flush the bytes written
-    await io.File(join(await getDatabasesPath(), dbName))
-        .writeAsBytes(bytes, flush: true);
+    if (!await databaseExists(join(await getDatabasesPath(), dbName))) {
+      // Write and flush the bytes written
+      await io.File(join(await getDatabasesPath(), dbName))
+          .writeAsBytes(bytes, flush: true);
+    }
   }
 
   ///Função que faz a inserção dos dados

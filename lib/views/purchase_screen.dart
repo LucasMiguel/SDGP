@@ -3,7 +3,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:sdgp/src/components/confirmeDialog.dart';
 import 'package:sdgp/src/components/pie_chart.dart';
-import 'package:sdgp/src/connections/connection_database.dart';
 import 'package:sdgp/src/controllers/c_purchase.dart';
 import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/styles/style_main.dart';
@@ -29,6 +28,7 @@ class PurchaseScreen extends StatelessWidget {
       listItensModel: [],
       status: 1,
     );
+    print(purchaseModel!.toMap());
     return ChangeNotifierProvider(
       create: (context) => purchaseModel,
       child: PurchaseBody(),
@@ -101,12 +101,6 @@ class PurchaseBody extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: IconButton(
                 onPressed: () async {
-                  // print("Compra");
-                  // print(purchaseProvider.toMap());
-                  // print("Itens");
-                  // for (var item in purchaseProvider.listItensModel!) {
-                  //   print(item.toMap());
-                  // }
                   PurchasesModel? tempData =
                       await PurchaseController().savePurchase(purchaseProvider);
 
@@ -123,14 +117,6 @@ class PurchaseBody extends StatelessWidget {
                           content: Text('Erro no salvamento da compra !!!')),
                     );
                   }
-                  var tempCompras =
-                      await ConnectionDB().getAllData(table: "purchases");
-                  print("Compras");
-                  print(tempCompras);
-                  var tempItems =
-                      await ConnectionDB().getAllData(table: "items");
-                  print("Items");
-                  print(tempItems);
                 },
                 icon: Icon(
                   Icons.save,
