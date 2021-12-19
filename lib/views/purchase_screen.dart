@@ -28,9 +28,8 @@ class PurchaseScreen extends StatelessWidget {
       listItensModel: [],
       status: 1,
     );
-    print(purchaseModel!.toMap());
-    return ChangeNotifierProvider(
-      create: (context) => purchaseModel,
+    return ChangeNotifierProvider<PurchasesModel>.value(
+      value: purchaseModel!,
       child: PurchaseBody(),
     );
   }
@@ -53,6 +52,7 @@ class PurchaseBody extends StatelessWidget {
             .where((element) => element.status == 1)
             .toList())
       ];
+
       return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -127,7 +127,6 @@ class PurchaseBody extends StatelessWidget {
             ),
           ],
         ),
-        // body: Expanded(child: DonutPieChart.withSampleData()),
         body: screens.elementAt(indexSelected),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: SpeedDial(

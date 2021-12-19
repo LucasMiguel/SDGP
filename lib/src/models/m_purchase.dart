@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sdgp/src/controllers/c_type_itens.dart';
 import 'package:sdgp/src/models/m_item.dart';
+import 'package:sdgp/src/models/m_type_item.dart';
 
 class PurchasesModel extends ChangeNotifier {
   int? id;

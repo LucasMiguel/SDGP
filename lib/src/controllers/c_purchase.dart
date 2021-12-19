@@ -292,6 +292,8 @@ class PurchaseController {
     List<Map<String, dynamic>> mapItems = [];
     List<PurchasesModel> purchasesList = [];
 
+    List<TypeItemModel> typeItemsList = await TypeItensController().getAll();
+
     //Get of the database
     mapPurchases = await ConnectionDB().getAllData(
         table: "purchases", columnsWhere: "status = ?", valueWhere: [1]);
@@ -299,11 +301,11 @@ class PurchaseController {
     //Retrives all the purchase's items
     for (var item in mapPurchases) {
       mapItems = [];
-      mapItems = await ConnectionDB().getAllData(
-        table: 'items',
-        columnsWhere: "purchase_id =? ",
-        valueWhere: [item['id']],
-      );
+      String queryItem =
+          "SELECT items.id, items.purchase_id, items.type_id, items.description, items.price, items.amount, items.type_amount, items.status, type_items.description AS name_type_item "
+          "FROM items INNER JOIN type_items ON type_items.id = items.type_id WHERE items.purchase_id = ${item['id']}";
+      mapItems = await ConnectionDB().getExecQuery(queryItem);
+
       purchasesList.add(PurchasesModel.fromJson(item, mapItems));
     }
     return purchasesList;

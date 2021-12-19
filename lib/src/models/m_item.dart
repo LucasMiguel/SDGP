@@ -33,6 +33,7 @@ class ItemsModel extends ChangeNotifier {
       amount: json['amount'],
       typeItemId: json['type_id'],
       typeAmount: json['type_amount'],
+      nameTypeItem: json['name_type_item'],
       status: json['status'],
     );
   }
