@@ -31,7 +31,7 @@ class ItemsModel extends ChangeNotifier {
       description: json['description'],
       price: json['price'],
       amount: json['amount'],
-      typeItemId: json['type'],
+      typeItemId: json['type_id'],
       typeAmount: json['type_amount'],
       status: json['status'],
     );
@@ -41,10 +41,10 @@ class ItemsModel extends ChangeNotifier {
     return {
       'id': id,
       'purchase_id': purchaseId,
+      'type_id': typeItemId,
       'description': description,
       'price': price,
       'amount': amount,
-      'type': typeItemId,
       'type_amount': typeAmount,
       'status': status,
     };

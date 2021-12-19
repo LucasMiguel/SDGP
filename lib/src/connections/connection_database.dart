@@ -74,16 +74,16 @@ class ConnectionDB {
 
   ///Função que irá retornar todos os dados da query
   Future<List<Map<String, dynamic>>> getAllData(
-      {required String query, String? columnsWhere, var valueWhere}) async {
+      {required String table, String? columnsWhere, var valueWhere}) async {
     List<Map<String, dynamic>> map;
     final database = await connect();
     if (columnsWhere == null) {
-      map = await database.query(query);
+      map = await database.query(table);
       //Fechando banco de dados
       await database.close();
       return map;
     } else {
-      map = await database.query(query,
+      map = await database.query(table,
           where: columnsWhere, whereArgs: valueWhere);
       //Fechando banco de dados
       await database.close();
@@ -109,14 +109,18 @@ class ConnectionDB {
     try {
       map = await database
           .rawQuery("SELECT * FROM $table ORDER BY id DESC LIMIT 1;");
+      print(map);
       //Fechando banco de dados
       await database.close();
-      return map[0]['id'];
+      if (map.isNotEmpty) {
+        return map[0]['id'];
+      }
+      return 0;
     } catch (e) {
-      print(e);
+      print("Erro: $e");
       //Fechando banco de dados
       await database.close();
-      return -1;
+      return 0;
     }
   }
 

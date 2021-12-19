@@ -3,6 +3,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:sdgp/src/components/confirmeDialog.dart';
 import 'package:sdgp/src/components/pie_chart.dart';
+import 'package:sdgp/src/connections/connection_database.dart';
 import 'package:sdgp/src/controllers/c_purchase.dart';
 import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/styles/style_main.dart';
@@ -17,8 +18,10 @@ class PurchaseScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => PurchasesModel(
         totalPrice: 0.00,
+        description: "Sem descrição",
         dateCreation: DateTime.now().toString(),
         listItensModel: [],
+        status: 1,
       ),
       child: PurchaseBody(),
     );
@@ -51,44 +54,81 @@ class PurchaseBody extends StatelessWidget {
             ),
             onPressed: () async {
               bool choise;
-
-              choise = await dialogConfirm(
-                  context: context,
-                  title: "Sair",
-                  body:
-                      "Deseja realmente sair?\nTodos os dados não salvos serão perdidos!",
-                  textBtn: "Sair",
-                  iconBtn: Icon(
-                    Icons.logout_outlined,
-                    color: Colors.white,
-                  ));
-              if (choise) {
+              if (!purchaseProvider.save) {
+                choise = await dialogConfirm(
+                    context: context,
+                    title: "Sair",
+                    body:
+                        "Deseja realmente sair?\nTodos os dados não salvos serão perdidos!",
+                    textBtn: "Sair",
+                    iconBtn: Icon(
+                      Icons.logout_outlined,
+                      color: Colors.white,
+                    ));
+                if (choise) {
+                  Navigator.pop(context, null);
+                }
+              } else {
                 Navigator.pop(context, null);
               }
             },
           ),
           backgroundColor: Colors.white,
           title: Center(
-            child: Text(
-              "Compra",
+            child: TextFormField(
+              initialValue: purchaseProvider.description,
+              textAlign: TextAlign.center,
               style: MainStyle().fontTitle,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
+              onChanged: (value) {
+                purchaseProvider.description = value.toString();
+                purchaseProvider.refreshWindow();
+              },
             ),
           ),
           actions: [
-            IconButton(
-              onPressed: () async {
-                // print(purchaseProvider.toMap());
-                // print("Itens");
-                // for (var item in purchaseProvider.listItensModel!) {
-                //   print(item.toMap());
-                // }
-                String? description = await dialogDescription(context: context);
-                print(description);
-              },
-              icon: Icon(
-                Icons.save,
-                color: purchaseProvider.save ? Colors.grey : Colors.green,
-                size: 30,
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                onPressed: () async {
+                  // print("Compra");
+                  // print(purchaseProvider.toMap());
+                  // print("Itens");
+                  // for (var item in purchaseProvider.listItensModel!) {
+                  //   print(item.toMap());
+                  // }
+                  PurchasesModel? tempData =
+                      await PurchaseController().savePurchase(purchaseProvider);
+
+                  if (tempData != null) {
+                    purchaseProvider = tempData;
+                    purchaseProvider.refreshSave();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Compra salva com sucesso!!!')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Erro no salvamento da compra !!!')),
+                    );
+                  }
+                  var tempCompras =
+                      await ConnectionDB().getAllData(table: "purchases");
+                  print("Compras");
+                  print(tempCompras);
+                  var tempItems =
+                      await ConnectionDB().getAllData(table: "items");
+                  print("Items");
+                  print(tempItems);
+                },
+                icon: Icon(
+                  Icons.save,
+                  color: purchaseProvider.save ? Colors.grey : Colors.green,
+                  size: 30,
+                ),
               ),
             ),
           ],

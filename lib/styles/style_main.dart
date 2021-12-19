@@ -10,7 +10,7 @@ class MainStyle {
   ///Font of title of the screens
   final fontTitle = TextStyle(
     color: Colors.black,
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: FontWeight.w800,
   );
 

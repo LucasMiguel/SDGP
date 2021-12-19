@@ -6,17 +6,15 @@ class PurchasesModel extends ChangeNotifier {
   String? description;
   double? totalPrice;
   String? dateCreation;
-  int? type;
   List<ItemsModel>? listItensModel;
   int? status;
-  bool save = false;
+  bool save = true;
 
   PurchasesModel(
       {this.id,
       this.description,
       this.totalPrice,
       this.dateCreation,
-      this.type,
       this.listItensModel,
       this.status});
 
@@ -26,7 +24,6 @@ class PurchasesModel extends ChangeNotifier {
       description: json['description'],
       totalPrice: json['total_price'],
       dateCreation: json['date_creation'],
-      type: json['type'],
       status: json['status'],
     );
   }
@@ -37,7 +34,6 @@ class PurchasesModel extends ChangeNotifier {
       'description': description,
       'total_price': totalPrice,
       'date_creation': dateCreation,
-      'type': type,
       'status': status,
     };
   }

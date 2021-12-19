@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 import 'package:sdgp/src/connections/connection_database.dart';
+import 'package:sdgp/src/controllers/c_item.dart';
 import 'package:sdgp/src/controllers/c_type_itens.dart';
 import 'package:sdgp/src/models/m_item.dart';
 import 'package:sdgp/src/models/m_purchase.dart';
@@ -256,16 +257,32 @@ class PurchaseController {
     );
   }
 
-  //Function on will save the purchase
-  Future<int?> SavePurchase(PurchasesModel purchaseModel) async {
-    int? idtemp;
-    if (purchaseModel.id == null) {
-      idtemp = await ConnectionDB().getLastId('purchases');
-      purchaseModel.id = idtemp;
-      return await ConnectionDB().insertData(purchaseModel, "purchases");
-    } else {
-      return await ConnectionDB()
-          .updateData(purchaseModel, "purchases", purchaseModel.id!);
+  ///This function will save the purchase
+  Future<PurchasesModel?> savePurchase(PurchasesModel purchaseModel) async {
+    try {
+      if (purchaseModel.id == null) {
+        int tempId = await ConnectionDB().getLastId("purchases") + 1;
+        purchaseModel.id = tempId;
+        await ConnectionDB().insertData(purchaseModel, "purchases");
+        if (purchaseModel.listItensModel != null) {
+          for (var item in purchaseModel.listItensModel!) {
+            item.purchaseId = purchaseModel.id;
+            await ItemController().saveItem(item);
+          }
+        }
+      } else {
+        await ConnectionDB()
+            .updateData(purchaseModel, "purchases", purchaseModel.id!);
+        if (purchaseModel.listItensModel != null) {
+          for (var item in purchaseModel.listItensModel!) {
+            item.purchaseId = purchaseModel.id;
+            await ItemController().saveItem(item);
+          }
+        }
+      }
+      return purchaseModel;
+    } catch (e) {
+      print("ERROR: $e");
     }
   }
 }
