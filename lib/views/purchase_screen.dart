@@ -10,19 +10,27 @@ import 'package:sdgp/styles/style_main.dart';
 import 'package:intl/intl.dart';
 
 ///Class with the screen purchase
+// ignore: must_be_immutable
 class PurchaseScreen extends StatelessWidget {
-  const PurchaseScreen({Key? key}) : super(key: key);
+  PurchaseScreen({
+    Key? key,
+    this.purchaseModel,
+  }) : super(key: key);
+
+  ///Variable with data of the save list
+  PurchasesModel? purchaseModel;
 
   @override
   Widget build(BuildContext context) {
+    purchaseModel ??= PurchasesModel(
+      totalPrice: 0.00,
+      description: "Sem descrição",
+      dateCreation: DateTime.now().toString(),
+      listItensModel: [],
+      status: 1,
+    );
     return ChangeNotifierProvider(
-      create: (context) => PurchasesModel(
-        totalPrice: 0.00,
-        description: "Sem descrição",
-        dateCreation: DateTime.now().toString(),
-        listItensModel: [],
-        status: 1,
-      ),
+      create: (context) => purchaseModel,
       child: PurchaseBody(),
     );
   }
