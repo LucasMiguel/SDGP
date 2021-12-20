@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sdgp/src/components/confirmeDialog.dart';
-import 'package:sdgp/src/connections/connection_database.dart';
 import 'package:sdgp/src/controllers/c_purchase.dart';
 import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/styles/style_main.dart';

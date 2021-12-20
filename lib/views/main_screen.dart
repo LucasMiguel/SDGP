@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sdgp/src/controllers/c_purchase.dart';
+import 'package:sdgp/src/controllers/c_type_itens.dart';
 import 'package:sdgp/src/models/m_purchase.dart';
+import 'package:sdgp/src/models/m_type_item.dart';
 import 'package:sdgp/styles/style_main.dart';
 import 'package:sdgp/views/purchase_list_view.dart';
 import 'package:sdgp/views/purchase_screen.dart';
+import 'package:sdgp/views/type_items_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -12,6 +15,40 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(11, 118, 140, 1),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        actions: [
+          PopupMenuButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+              size: 30,
+            ),
+            onSelected: (result) async {
+              switch (result) {
+                case 1:
+                  List<TypeItemModel> typeList =
+                      await TypeItensController().getAll();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TypeItemListView(
+                        typeItemsList: typeList,
+                      ),
+                    ),
+                  );
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+              const PopupMenuItem<int>(
+                value: 1,
+                child: Text('Editar tipo dos items'),
+              ),
+            ],
+          )
+        ],
+      ),
       body: Center(
         child: Column(
           children: [
@@ -19,7 +56,7 @@ class MainScreen extends StatelessWidget {
             // LOGO ============================================================
             //==================================================================
             Container(
-              margin: EdgeInsets.only(top: 150),
+              margin: EdgeInsets.only(top: 120),
               child: Image(
                 image: AssetImage('images/logo_vertical.png'),
                 width: 150,

@@ -1,16 +1,18 @@
-# sdgp
 
-A new Flutter project.
+# Aplicativo Se Der a Gente Passa (S.D.G.P)
 
-## Getting Started
+Aplicativo para auxilio em compras. 
+Com ele é possível listar os itens de sua compra 
+e saber exatamento quanto dará no valor final. 
+É possível ainda, adicionar e 
+remover itens da lista para checagem de valor.
+E por fim, ele é capaz de armazenar listas para 
+futuras consultas ou usabilidade.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+### Tecnologia
+Aplicativo desenvolvido em Flutter(Dart).
+Utilizando como banco de dados o Sqlite3.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Requisitos
+Android 8.1(Oreo) ou superior.

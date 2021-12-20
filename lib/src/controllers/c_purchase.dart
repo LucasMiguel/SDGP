@@ -25,7 +25,7 @@ class PurchaseController {
     //List of Type's itens
     List<TypeItemModel> listTypes = [];
     //Get all the types in database
-    listTypes = await TypeItensController().getAll();
+    listTypes = await TypeItensController().getAllActive();
 
     if (itemModel == null) {
       itemModel = ItemsModel();
@@ -40,6 +40,7 @@ class PurchaseController {
     return await showDialog<ItemsModel>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(title),
         content: SizedBox(
           height: 300,
@@ -292,7 +293,8 @@ class PurchaseController {
     List<Map<String, dynamic>> mapItems = [];
     List<PurchasesModel> purchasesList = [];
 
-    List<TypeItemModel> typeItemsList = await TypeItensController().getAll();
+    List<TypeItemModel> typeItemsList =
+        await TypeItensController().getAllActive();
 
     //Get of the database
     mapPurchases = await ConnectionDB().getAllData(

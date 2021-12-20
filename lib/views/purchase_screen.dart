@@ -455,7 +455,7 @@ class CardItem extends StatelessWidget {
               ),
             ),
             //==================================================================
-            // 2nd ROW - PRODUCT'S NAME ========================================
+            // 3nd ROW - PRODUTCT'S ATTIBUTE ===================================
             //==================================================================
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
