@@ -28,6 +28,7 @@ class PurchaseScreen extends StatelessWidget {
       listItensModel: [],
       status: 1,
     );
+
     return ChangeNotifierProvider<PurchasesModel>.value(
       value: purchaseModel!,
       child: PurchaseBody(),
@@ -38,7 +39,6 @@ class PurchaseScreen extends StatelessWidget {
 ///Widget with the purchase's body
 class PurchaseBody extends StatelessWidget {
   const PurchaseBody({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     int indexSelected = 0;
@@ -74,10 +74,10 @@ class PurchaseBody extends StatelessWidget {
                       color: Colors.white,
                     ));
                 if (choise) {
-                  Navigator.pop(context, null);
+                  Navigator.pop(context, true);
                 }
               } else {
-                Navigator.pop(context, null);
+                Navigator.pop(context, true);
               }
             },
           ),

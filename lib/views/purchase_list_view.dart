@@ -66,8 +66,8 @@ class _PurchaseListViewState extends State<PurchaseListView> {
             side: BorderSide(color: Color.fromRGBO(35, 152, 162, 1)),
           ),
         ),
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          var returnVal = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => PurchaseScreen(
@@ -75,12 +75,16 @@ class _PurchaseListViewState extends State<PurchaseListView> {
               ),
             ),
           );
+
+          if (returnVal == true) {
+            refreshWindow();
+          }
         },
         child: Row(
           children: [
             Expanded(
                 child: Text(
-              "${purchasesModel.description} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(purchasesModel.dateCreation!))}",
+              "${purchasesModel.description}",
               style: MainStyle().fontCardPurchaseList,
             )),
             IconButton(
@@ -120,5 +124,11 @@ class _PurchaseListViewState extends State<PurchaseListView> {
         ),
       ),
     );
+  }
+
+  ///This fuction refresh window
+  void refreshWindow() async {
+    widget.purchasesList = await PurchaseController().getPurchasesList();
+    setState(() {});
   }
 }
