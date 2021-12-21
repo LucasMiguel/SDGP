@@ -47,7 +47,7 @@ class _TypeItemListViewState extends State<TypeItemListView> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           String? description = await TypeItensController()
-              .dialogEdit(title: "Novo Tipo", context: context);
+              .dialogEditTypeItem(title: "Novo Tipo", context: context);
           if (description != null) {
             TypeItemModel newTypeItem =
                 TypeItemModel(description: description, status: 1);
@@ -83,7 +83,7 @@ class _TypeItemListViewState extends State<TypeItemListView> {
           ),
         ),
         onPressed: () async {
-          String? descTemp = await TypeItensController().dialogEdit(
+          String? descTemp = await TypeItensController().dialogEditTypeItem(
               title: "Editar tipo",
               context: context,
               description: typeItemModel.description);

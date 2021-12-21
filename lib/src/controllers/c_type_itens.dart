@@ -41,7 +41,7 @@ class TypeItensController {
   }
 
   ///This fuction will show the dialog for insert or edit item's type
-  Future<String?> dialogEdit({
+  Future<String?> dialogEditTypeItem({
     required String title,
     String? description,
     required BuildContext context,
