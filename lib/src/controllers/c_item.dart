@@ -13,4 +13,10 @@ class ItemController {
           .updateData(itemsModel, "items", itemsModel.id!);
     }
   }
+
+  ///This Function will delete an item
+  Future<bool?> deleteItem(ItemsModel itemsModel) async {
+    return await ConnectionDB().deleteItem(
+        table: "items", whereColumn: "id=?", whereValues: [itemsModel.id]);
+  }
 }

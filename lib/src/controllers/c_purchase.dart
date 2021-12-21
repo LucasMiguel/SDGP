@@ -20,7 +20,6 @@ class PurchaseController {
     required String title,
     ItemsModel? itemModel,
     required BuildContext context,
-    int? type,
   }) async {
     //List of Type's itens
     List<TypeItemModel> listTypes = [];
@@ -30,7 +29,6 @@ class PurchaseController {
     if (itemModel == null) {
       itemModel = ItemsModel();
       itemModel.status = 1;
-      itemModel.typeAmount = type;
     }
 
     ///Variável for form's
@@ -94,7 +92,7 @@ class PurchaseController {
                       border: new OutlineInputBorder(
                           borderSide: new BorderSide(color: Colors.teal),
                           borderRadius: BorderRadius.circular(15)),
-                      labelText: type == 1 ? 'Valor Unitário' : 'Valor do Kg',
+                      labelText: 'Valor Uni/Kg',
                     ),
                     validator: (value) {
                       return value == null || value.isEmpty
@@ -123,22 +121,17 @@ class PurchaseController {
                     textAlignVertical: TextAlignVertical.bottom,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
-                      type == 1
-                          ? ThousandsFormatter(
-                              allowFraction: false,
-                              formatter: NumberFormat.decimalPattern("pt_BR"),
-                            )
-                          : ThousandsFormatter(
-                              allowFraction: true,
-                              formatter: NumberFormat.decimalPattern("pt_BR"),
-                            )
+                      ThousandsFormatter(
+                        allowFraction: true,
+                        formatter: NumberFormat.decimalPattern("pt_BR"),
+                      )
                     ],
                     decoration: InputDecoration(
                       border: new OutlineInputBorder(
                           borderSide: new BorderSide(color: Colors.teal),
                           borderRadius: BorderRadius.circular(15)),
-                      hintText: type == 1 ? 'Quantidade' : 'Peso (Kg)',
-                      labelText: type == 1 ? 'Quantidade' : 'Peso (Kg)',
+                      hintText: 'Quantidade/Kg',
+                      labelText: 'Quantidade/Kg',
                     ),
                     validator: (value) {
                       return value == null || value.isEmpty
@@ -304,10 +297,9 @@ class PurchaseController {
     for (var item in mapPurchases) {
       mapItems = [];
       String queryItem =
-          "SELECT items.id, items.purchase_id, items.type_id, items.description, items.price, items.amount, items.type_amount, items.status, type_items.description AS name_type_item "
+          "SELECT items.id, items.purchase_id, items.type_id, items.description, items.price, items.amount, items.status, type_items.description AS name_type_item "
           "FROM items INNER JOIN type_items ON type_items.id = items.type_id WHERE items.purchase_id = ${item['id']}";
       mapItems = await ConnectionDB().getExecQuery(queryItem);
-
       purchasesList.add(PurchasesModel.fromJson(item, mapItems));
     }
     return purchasesList;

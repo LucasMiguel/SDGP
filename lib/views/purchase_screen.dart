@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:sdgp/src/components/confirmeDialog.dart';
 import 'package:sdgp/src/components/pie_chart.dart';
+import 'package:sdgp/src/controllers/c_item.dart';
 import 'package:sdgp/src/controllers/c_purchase.dart';
 import 'package:sdgp/src/models/m_purchase.dart';
 import 'package:sdgp/styles/style_main.dart';
@@ -129,58 +131,25 @@ class PurchaseBody extends StatelessWidget {
         ),
         body: screens.elementAt(indexSelected),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: SpeedDial(
-          icon: Icons.add_shopping_cart_rounded,
-          iconTheme: IconThemeData(size: 25),
-          foregroundColor: Colors.white,
-          activeIcon: Icons.close,
-          activeBackgroundColor: Colors.red.shade400,
-          backgroundColor: const Color.fromRGBO(7, 103, 123, 1),
-          overlayColor: Colors.grey,
-          overlayOpacity: 0.5,
-          spacing: 15,
-          spaceBetweenChildren: 15,
-          children: [
-            //===== A GRANEL ===================================================
-            SpeedDialChild(
-                child: const Icon(
-                  Icons.format_list_numbered_outlined,
-                  color: Color.fromRGBO(5, 130, 202, 1),
-                ),
-                label: 'Unidade',
-                onTap: () async {
-                  var itemModel;
-                  //Call the dialog
-                  itemModel = await PurchaseController().dialogEdit(
-                    title: "Novo Produto",
-                    context: context,
-                    type: 1,
-                  );
-                  if (itemModel != null) {
-                    purchaseProvider.addNewItem(itemModel: itemModel);
-                  }
-                }),
-            //===== UNIDADE ====================================================
-            SpeedDialChild(
-              child: const Icon(
-                Icons.line_weight,
-                color: Color.fromRGBO(0, 128, 0, 1),
-              ),
-              label: 'Granel',
-              onTap: () async {
-                var itemModel;
-                //Call the dialog
-                itemModel = await PurchaseController().dialogEdit(
-                  title: "Novo Produto",
-                  context: context,
-                  type: 2,
-                );
-                if (itemModel != null) {
-                  purchaseProvider.addNewItem(itemModel: itemModel);
-                }
-              },
-            ),
-          ],
+        floatingActionButton: FloatingActionButton(
+          elevation: 10,
+          backgroundColor: Color.fromRGBO(11, 118, 140, 1),
+          child: Icon(
+            Icons.add_shopping_cart_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
+          onPressed: () async {
+            var itemModel;
+            //Call the dialog
+            itemModel = await PurchaseController().dialogEdit(
+              title: "Novo Produto",
+              context: context,
+            );
+            if (itemModel != null) {
+              purchaseProvider.addNewItem(itemModel: itemModel);
+            }
+          },
         ),
         //======================================================================
         // BOTTOM NAVIGATION BAR ===============================================
@@ -427,10 +396,12 @@ class CardItem extends StatelessWidget {
                                   ));
                               //show the dialog wating the confirmation
                               if (choise == true) {
-                                if (purchaseProvider.id == null) {
-                                  purchaseProvider.listItensModel!
-                                      .removeAt(index);
+                                if (purchaseProvider.id != null) {
+                                  ItemController().deleteItem(
+                                      purchaseProvider.listItensModel![index]);
                                 }
+                                purchaseProvider.listItensModel!
+                                    .removeAt(index);
                                 purchaseProvider.refreshPrice();
                               }
                             },
@@ -465,9 +436,7 @@ class CardItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      purchaseProvider.listItensModel![index].typeAmount == 1
-                          ? "Valor Unitário"
-                          : "Valor Quilo",
+                      "Valor Uni./Kg",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
@@ -482,18 +451,12 @@ class CardItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      purchaseProvider.listItensModel![index].typeAmount == 1
-                          ? "Quant."
-                          : "Kg",
+                      "Quant./Kg",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
-                      purchaseProvider.listItensModel![index].typeAmount == 1
-                          ? (purchaseProvider.listItensModel![index].amount!
-                                  .floor())
-                              .toString()
-                          : NumberFormat.decimalPattern("pt_BR").format(
-                              purchaseProvider.listItensModel![index].amount),
+                      NumberFormat.decimalPattern("pt_BR").format(
+                          purchaseProvider.listItensModel![index].amount),
                       style: MainStyle().fontCharacttIten,
                     ),
                   ],

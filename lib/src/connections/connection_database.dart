@@ -126,6 +126,25 @@ class ConnectionDB {
     }
   }
 
+  ///Função que irá apagar um item da tabela
+  Future<bool> deleteItem(
+      {required String table,
+      required String whereColumn,
+      required var whereValues}) async {
+    final database = await connect();
+    try {
+      await database.delete(table, where: whereColumn, whereArgs: whereValues);
+      //Fechando banco de dados
+      await database.close();
+      return true;
+    } catch (e) {
+      print(e);
+      //Fechando banco de dados
+      await database.close();
+      return false;
+    }
+  }
+
   ///Função que irá limpar a tabela para adicionar o novo valor
   Future<bool> deleteTable(String table) async {
     final database = await connect();
