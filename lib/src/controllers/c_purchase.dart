@@ -92,7 +92,7 @@ class PurchaseController {
                       border: new OutlineInputBorder(
                           borderSide: new BorderSide(color: Colors.teal),
                           borderRadius: BorderRadius.circular(15)),
-                      labelText: 'Valor Uni/Kg',
+                      labelText: 'Valor (Uni.|Kg)',
                     ),
                     validator: (value) {
                       return value == null || value.isEmpty
@@ -130,8 +130,8 @@ class PurchaseController {
                       border: new OutlineInputBorder(
                           borderSide: new BorderSide(color: Colors.teal),
                           borderRadius: BorderRadius.circular(15)),
-                      hintText: 'Quantidade/Kg',
-                      labelText: 'Quantidade/Kg',
+                      hintText: 'Quantidade|Peso(Kg)',
+                      labelText: 'Quantidade|Peso(Kg)',
                     ),
                     validator: (value) {
                       return value == null || value.isEmpty

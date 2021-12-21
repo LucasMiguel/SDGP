@@ -436,7 +436,7 @@ class CardItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Valor Uni./Kg",
+                      "Valor Uni.| Kg",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(
@@ -451,7 +451,7 @@ class CardItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Quant./Kg",
+                      "Quant.| Peso(Kg)",
                       style: MainStyle().fontLabelItens,
                     ),
                     Text(

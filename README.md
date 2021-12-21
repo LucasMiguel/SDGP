@@ -3,7 +3,7 @@
 
 Aplicativo para auxilio em compras. 
 Com ele é possível listar os itens de sua compra 
-e saber exatamento quanto dará no valor final. 
+e saber exatamente quanto dará no valor final. 
 É possível ainda, adicionar e 
 remover itens da lista para checagem de valor.
 E por fim, ele é capaz de armazenar listas para 
