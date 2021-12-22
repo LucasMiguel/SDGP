@@ -147,6 +147,9 @@ class PurchaseBody extends StatelessWidget {
               context: context,
             );
             if (itemModel != null) {
+              itemModel.status = (itemModel.price == null ? 0 : 1);
+              itemModel.price = itemModel.price ?? 0.0;
+              itemModel.amount = itemModel.amount ?? 0.0;
               purchaseProvider.addNewItem(itemModel: itemModel);
             }
           },
@@ -361,6 +364,10 @@ class CardItem extends StatelessWidget {
                                 context: context,
                               );
                               if (itemModel != null) {
+                                itemModel.status =
+                                    (itemModel.price == null ? 0 : 1);
+                                itemModel.price = itemModel.price ?? 0.0;
+                                itemModel.amount = itemModel.amount ?? 0.0;
                                 purchaseProvider.listItensModel![index] =
                                     itemModel;
                               }

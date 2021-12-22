@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sdgp/src/controllers/c_type_itens.dart';
 import 'package:sdgp/src/models/m_item.dart';
-import 'package:sdgp/src/models/m_type_item.dart';
 
 class PurchasesModel extends ChangeNotifier {
   int? id;
@@ -73,7 +71,7 @@ class PurchasesModel extends ChangeNotifier {
     totalPrice = 0.00;
     for (var item in listItensModel!) {
       if (item.status == 1) {
-        totalPrice = totalPrice! + (item.price! * item.amount!);
+        totalPrice = totalPrice! + ((item.price ?? 0) * (item.amount ?? 0));
       }
     }
     refreshWindow();

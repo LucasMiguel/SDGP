@@ -34,220 +34,249 @@ class PurchaseController {
     ///Variável for form's
     final _formKey = GlobalKey<FormState>();
 
+    StateSetter _setState;
+
     //Show the dialog
     return await showDialog<ItemsModel>(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(title),
-        content: SizedBox(
-          height: 300,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                // PRODUCT'S TEXTFIELD ---------------------------------------------
-                SizedBox(
-                  height: 60,
-                  child: TextFormField(
-                    initialValue:
-                        (itemModel != null ? itemModel.description : ""),
-                    textAlignVertical: TextAlignVertical.bottom,
-                    decoration: InputDecoration(
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.teal),
-                          borderRadius: BorderRadius.circular(15)),
-                      hintText: 'Nome do Produto',
-                      labelText: 'Produto',
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(title),
+          content: SizedBox(
+            height: 300,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // PRODUCT'S TEXTFIELD ---------------------------------------------
+                  SizedBox(
+                    height: 60,
+                    child: TextFormField(
+                      autofocus: true,
+                      initialValue: itemModel!.description ?? "",
+                      textAlignVertical: TextAlignVertical.bottom,
+                      decoration: InputDecoration(
+                        border: new OutlineInputBorder(
+                            borderSide: new BorderSide(color: Colors.teal),
+                            borderRadius: BorderRadius.circular(15)),
+                        hintText: 'Nome do Produto',
+                        labelText: 'Produto',
+                        suffix: GestureDetector(
+                          onTap: () {
+                            itemModel!.description = "";
+                            setState(() {
+                              print("Coisa");
+                            });
+                            print(itemModel.description);
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        return value == null || value.isEmpty
+                            ? "Favor inserir o nome do produto!"
+                            : null;
+                      },
+                      onChanged: (value) {
+                        itemModel!.description = value.toString();
+                      },
                     ),
-                    validator: (value) {
-                      return value == null || value.isEmpty
-                          ? "Favor inserir o nome do produto!"
-                          : null;
-                    },
-                    onChanged: (value) {
-                      itemModel!.description = value.toString();
-                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                // PRICE'S TEXTFIELD ---------------------------------------------
-                SizedBox(
-                  height: 65,
-                  child: TextFormField(
-                    initialValue: (itemModel!.price != null
-                        ? NumberFormat.simpleCurrency(locale: "pt_BR")
-                            .format(itemModel.price)
-                        : ""),
-                    textAlignVertical: TextAlignVertical.bottom,
-                    inputFormatters: [
-                      CurrencyTextInputFormatter(
-                        decimalDigits: 2,
-                        locale: 'pt_BR',
-                        customPattern: "R\$ ",
-                      )
-                    ],
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.teal),
-                          borderRadius: BorderRadius.circular(15)),
-                      labelText: 'Valor (Uni.|Kg)',
+                  SizedBox(height: 10),
+                  // PRICE'S TEXTFIELD ---------------------------------------------
+                  SizedBox(
+                    height: 65,
+                    child: TextFormField(
+                      initialValue: (itemModel.price != null
+                          ? NumberFormat.simpleCurrency(locale: "pt_BR")
+                              .format(itemModel.price)
+                          : ""),
+                      textAlignVertical: TextAlignVertical.bottom,
+                      inputFormatters: [
+                        CurrencyTextInputFormatter(
+                          decimalDigits: 2,
+                          locale: 'pt_BR',
+                          customPattern: "R\$ ",
+                        )
+                      ],
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        border: new OutlineInputBorder(
+                            borderSide: new BorderSide(color: Colors.teal),
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Valor (Uni.|Kg)',
+                        suffix: GestureDetector(
+                          onTap: () {
+                            itemModel!.description = "";
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        try {
+                          itemModel!.price = double.parse(value
+                              .replaceAll(',', '.')
+                              .replaceAll('R\$', '')
+                              .trim());
+                        } catch (e) {}
+                      },
                     ),
-                    validator: (value) {
-                      return value == null || value.isEmpty
-                          ? "Favor inserir o valor do produto!"
-                          : null;
-                    },
-                    onChanged: (value) {
-                      try {
-                        itemModel!.price = double.parse(value
-                            .replaceAll(',', '.')
-                            .replaceAll('R\$', '')
-                            .trim());
-                      } catch (e) {}
-                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                // AMOUNT'S TEXTFIELD ---------------------------------------------
-                SizedBox(
-                  height: 60,
-                  child: TextFormField(
-                    initialValue: (itemModel.amount != null
-                        ? NumberFormat.decimalPattern("pt_BR")
-                            .format(itemModel.amount)
-                        : ""),
-                    textAlignVertical: TextAlignVertical.bottom,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      ThousandsFormatter(
-                        allowFraction: true,
-                        formatter: NumberFormat.decimalPattern("pt_BR"),
-                      )
-                    ],
-                    decoration: InputDecoration(
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.teal),
-                          borderRadius: BorderRadius.circular(15)),
-                      hintText: 'Quantidade|Peso(Kg)',
-                      labelText: 'Quantidade|Peso(Kg)',
+                  SizedBox(height: 10),
+                  // AMOUNT'S TEXTFIELD ---------------------------------------------
+                  SizedBox(
+                    height: 60,
+                    child: TextFormField(
+                      initialValue: (itemModel.amount != null
+                          ? NumberFormat.decimalPattern("pt_BR")
+                              .format(itemModel.amount)
+                          : ""),
+                      textAlignVertical: TextAlignVertical.bottom,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        ThousandsFormatter(
+                          allowFraction: true,
+                          formatter: NumberFormat.decimalPattern("pt_BR"),
+                        )
+                      ],
+                      decoration: InputDecoration(
+                        border: new OutlineInputBorder(
+                            borderSide: new BorderSide(color: Colors.teal),
+                            borderRadius: BorderRadius.circular(15)),
+                        hintText: 'Quantidade|Peso(Kg)',
+                        labelText: 'Quantidade|Peso(Kg)',
+                        suffix: GestureDetector(
+                          onTap: () {
+                            itemModel!.description = "";
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        try {
+                          itemModel!.amount = double.parse(
+                              value.replaceAll('.', '').replaceAll(',', '.'));
+                        } catch (e) {
+                          itemModel!.amount = 0.00;
+                        }
+                      },
                     ),
-                    validator: (value) {
-                      return value == null || value.isEmpty
-                          ? "Favor inserir a quantidade!"
-                          : null;
-                    },
-                    onChanged: (value) {
-                      try {
-                        itemModel!.amount = double.parse(
-                            value.replaceAll('.', '').replaceAll(',', '.'));
-                      } catch (e) {
-                        itemModel!.amount = 0.00;
-                      }
-                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                // TYPE'S TEXTFIELD ---------------------------------------------
-                SizedBox(
-                  height: 80,
-                  child: DropdownButtonFormField(
-                    decoration: InputDecoration(
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.teal),
-                          borderRadius: BorderRadius.circular(15)),
-                      labelText: 'Tipo',
+                  SizedBox(height: 10),
+                  // TYPE'S TEXTFIELD ---------------------------------------------
+                  SizedBox(
+                    height: 80,
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        border: new OutlineInputBorder(
+                            borderSide: new BorderSide(color: Colors.teal),
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Tipo',
+                      ),
+                      value: itemModel.typeItemId,
+                      items: listTypes.map((value) {
+                        return DropdownMenuItem(
+                          value: value.id,
+                          child: Text(value.description!),
+                        );
+                      }).toList(),
+                      validator: (value) {
+                        return value == null ? "Favor escolher um tipo!" : null;
+                      },
+                      onChanged: (value) {
+                        itemModel!.typeItemId = int.parse(value.toString());
+                        itemModel.nameTypeItem = listTypes
+                            .singleWhere((element) =>
+                                element.id == int.parse(value.toString()))
+                            .description;
+                      },
                     ),
-                    value: itemModel.typeItemId,
-                    items: listTypes.map((value) {
-                      return DropdownMenuItem(
-                        value: value.id,
-                        child: Text(value.description!),
-                      );
-                    }).toList(),
-                    validator: (value) {
-                      return value == null ? "Favor escolher um tipo!" : null;
-                    },
-                    onChanged: (value) {
-                      itemModel!.typeItemId = int.parse(value.toString());
-                      itemModel.nameTypeItem = listTypes
-                          .singleWhere((element) =>
-                              element.id == int.parse(value.toString()))
-                          .description;
-                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        //======================================================================
-        // Action's buttons ====================================================
-        //======================================================================
-        actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.red.shade300,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
+          //======================================================================
+          // Action's buttons ====================================================
+          //======================================================================
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.red.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
                     ),
                   ),
+                  //Return null if is cancel
+                  onPressed: () => Navigator.pop(context, null),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.cancel,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "Cancelar",
+                          style: MainStyle().fontBtnsAlert,
+                        ),
+                      ]),
                 ),
-                //Return null if is cancel
-                onPressed: () => Navigator.pop(context, null),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(
-                        Icons.cancel,
-                        color: Colors.white,
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.green.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
                       ),
-                      SizedBox(width: 10),
-                      Text(
-                        "Cancelar",
-                        style: MainStyle().fontBtnsAlert,
-                      ),
-                    ]),
-              ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.green.shade300,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
                     ),
                   ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.pop(context, itemModel);
+                    }
+                  },
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "Salvar",
+                          style: MainStyle().fontBtnsAlert,
+                        ),
+                      ]),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Navigator.pop(context, itemModel);
-                  }
-                },
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(
-                        Icons.check,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "Salvar",
-                        style: MainStyle().fontBtnsAlert,
-                      ),
-                    ]),
-              ),
-            ],
-          )
-        ],
-      ),
+              ],
+            )
+          ],
+        );
+      }),
     );
   }
 
