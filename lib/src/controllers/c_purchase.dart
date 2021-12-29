@@ -39,6 +39,10 @@ class PurchaseController {
     TextEditingController amountField = TextEditingController();
 
     descriptionField.text = itemModel.description ?? "";
+    priceField.text =
+        NumberFormat.simpleCurrency(locale: "pt_BR").format(itemModel.price);
+    amountField.text =
+        NumberFormat.decimalPattern('pt_BR').format(itemModel.amount);
 
     ///Variável for form's
     final _formKey = GlobalKey<FormState>();
@@ -116,8 +120,10 @@ class PurchaseController {
                       labelText: 'Valor (Uni.|Kg)',
                       suffix: GestureDetector(
                         onTap: () {
-                          itemModel!.description = "";
-                          priceField.clear();
+                          itemModel!.price = 0;
+                          priceField.text =
+                              NumberFormat.simpleCurrency(locale: "pt_BR")
+                                  .format(itemModel.price);
                         },
                         child: Icon(
                           Icons.close,
@@ -132,7 +138,6 @@ class PurchaseController {
                             .replaceAll(',', '.')
                             .replaceAll('R\$', '')
                             .trim());
-                        print(itemModel.price);
                       } catch (e) {}
                     },
                   ),
@@ -160,7 +165,9 @@ class PurchaseController {
                       suffix: GestureDetector(
                         onTap: () {
                           itemModel!.amount = 0;
-                          amountField.clear();
+                          amountField.text =
+                              NumberFormat.decimalPattern('pt_BR')
+                                  .format(itemModel.amount);
                         },
                         child: Icon(
                           Icons.close,
